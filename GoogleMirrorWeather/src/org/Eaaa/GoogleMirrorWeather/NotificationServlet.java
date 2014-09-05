@@ -17,6 +17,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.Eaaa.WeatherAPI.OpenWeatherMap;
+import org.Eaaa.WeatherAPI.WeatherJSON;
+import org.Eaaa.WeatherAPI.WeatherObject;
+
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 import com.google.api.client.http.InputStreamContent;
@@ -90,15 +94,14 @@ public class NotificationServlet extends HttpServlet {
 			logger.info("In the collection=timeline if");
 			// get the timeline item which triggered notification
 			TimelineItem notifiedItem = mirror.timeline().get(notification.getItemId()).execute();
-			if(notification.getUserActions().contains(new UserAction().setType("CUSTOM").setPayload("changeId")))
+			if(notification.getUserActions().contains(new UserAction().setType("CUSTOM").setPayload("Update")))
 			{
 				
 				logger.info("In the getUserActions if");
 				// html styled content
-				String html = 	"<article><section><p class=\"text-auto-size\">" +
-								"<em class\"yellow\" Hello World! </em><br>" +
-								"Welcome to the <strong class=\"blue\">Mirror API test opdateret igen </strong> at Eaaa." +
-								"</p></section></article>";
+				WeatherObject weather = WeatherJSON.getWeatherBy("Denmark", "Aarhus", OpenWeatherMap.getInstance());
+				
+				String html = GoogleMirrorWeatherServlet.setHtml(weather.getString(4), weather.getString(0), weather.getString(1), weather.getString(2), weather.getString(3));
 				
 				Timeline timeline = mirror.timeline();
 				
